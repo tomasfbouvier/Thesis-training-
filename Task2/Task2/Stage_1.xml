@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<alien>
+  <collection name="Stage_1">
+    <event name="1">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/001/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/001/root_archive.zip" />
+    </event>
+    <event name="2">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/002/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/002/root_archive.zip" />
+    </event>
+    <event name="3">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/003/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/003/root_archive.zip" />
+    </event>
+    <event name="4">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/004/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/004/root_archive.zip" />
+    </event>
+    <event name="5">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/005/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/005/root_archive.zip" />
+    </event>
+    <event name="6">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/006/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/006/root_archive.zip" />
+    </event>
+    <event name="7">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/007/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/007/root_archive.zip" />
+    </event>
+    <event name="8">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/008/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/008/root_archive.zip" />
+    </event>
+    <event name="9">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/009/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/009/root_archive.zip" />
+    </event>
+    <event name="10">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/010/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/010/root_archive.zip" />
+    </event>
+    <event name="11">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/011/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/011/root_archive.zip" />
+    </event>
+    <event name="12">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/012/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/012/root_archive.zip" />
+    </event>
+    <event name="13">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/013/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/013/root_archive.zip" />
+    </event>
+    <event name="14">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/014/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/014/root_archive.zip" />
+    </event>
+    <event name="15">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/015/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/015/root_archive.zip" />
+    </event>
+    <event name="16">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/016/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/016/root_archive.zip" />
+    </event>
+    <event name="17">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/017/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/017/root_archive.zip" />
+    </event>
+    <event name="18">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/018/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/018/root_archive.zip" />
+    </event>
+    <event name="19">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/019/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/019/root_archive.zip" />
+    </event>
+    <event name="20">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/020/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/020/root_archive.zip" />
+    </event>
+    <event name="21">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/021/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/021/root_archive.zip" />
+    </event>
+    <event name="22">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/022/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/022/root_archive.zip" />
+    </event>
+    <event name="23">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/023/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/023/root_archive.zip" />
+    </event>
+    <event name="24">
+      <file name="root_archive.zip" lfn="/alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/024/root_archive.zip" turl="alien:///alice/cern.ch/user/f/fernandt/Task2/Task2OutputDir/000244918/024/root_archive.zip" />
+    </event>
+    <info comment="Exported XML" />
+</collection>
+</alien>

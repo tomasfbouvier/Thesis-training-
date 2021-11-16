@@ -88,36 +88,13 @@ class AliAnalysisFlowTask6 : public AliAnalysisTaskSE
         TString                 fCentEstimator; // [kV0M]
         AliEventCuts            fEventCuts;
 
-        //outputs
-        TList*                  fOutputList;    //! output list
         //output events QA
         TH1D*                   fhEventCounter; //!z  //!
     
-        TProfile*   prof_3pc_4_22[11]; //!
-        TProfile*   prof_3pc_5_23[11];//!
-        TProfile*   prof_4pc_6_222[11];//!
-        TProfile*   prof_3pc_6_24[11];//!
-        TProfile*   prof_3pc_6_33[11];//!
-        TProfile*   prof_4pc_7_233[11];//!
-        TProfile*   prof_4pc_8_233[11];//!
-        
-        TProfile*   prof_4pc_2[11];//!
-        TProfile*   prof_4pc_23[11];//!
-        TProfile*   prof_6pc_2[11];//!
-        TProfile*   prof_4pc_24[11];//!
-        TProfile*   prof_4pc_3[11];//!
-        TProfile*   prof_6pc_3_2222[11];//!
-        TProfile*   prof_6pc_2_3333[11];//!
-    
 
 
-        TList*                  fInputWeights;    //! list w weights
-        //output events QA
-        TH1D*                   fhWeight; //!
-    
-        Double_t                fgap;
 
-        vector<Double_t>        Q2;
+
     
     //! ADDED FOR CORRELATION TASK
     
@@ -143,78 +120,8 @@ class AliAnalysisFlowTask6 : public AliAnalysisTaskSE
     
     //!
     
-    
-    
-    
-        Double_t Total_weight_A;
-        Double_t Total_weight_B;
-    
-        Double_t                weight;
-        
-        Bool_t                  fWeighting;
-        Bool_t                  fGapping;
-        Bool_t                  fDiff;
-    
-        Int_t                   maxHarm;
-        Int_t                   maxWeightPower;
-    
-    
 
-            
-        static const Int_t      fFlowNumWeightPowersMax = 7; // maximum weight power length of flow vector array
-        static const Int_t      fFlowNumHarmonicsMax = 9; // maximum harmonics length of flow vector array
-    
-        Int_t                   fiHarm[fFlowNumHarmonicsMax];
-        TComplex                fFlowVecQpos[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-        TComplex                fFlowVecQneg[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-        TComplex                fFlowVecPpos[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-        TComplex                fFlowVecPneg[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-
-        TComplex                fFlowVecSpos[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-        
-        TComplex                fFlowVecSneg[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax]; // flow vector array for flow calculation
-        
-        
-        
-        
-        TComplex TwoGap(const Int_t n1, const Int_t n2) const;
-        TComplex ThreeGap(const Int_t n1, const Int_t n2, const Int_t n3) const;
-        TComplex TwoDiff(const Int_t n1, const Int_t n2) const;
-        TComplex TwoDiffGapPos(const Int_t n1, const Int_t n2) const;
-        TComplex TwoDiffGapNeg(const Int_t n1, const Int_t n2) const;
-        TComplex Q(const Int_t n, const Int_t p) const;
-        TComplex QGapPos(const Int_t n, const Int_t p) const;
-        TComplex QGapNeg(const Int_t n, const Int_t p) const;
-        
-        TComplex P(const Int_t n, const Int_t p) const;
-        TComplex PGapPos(const Int_t n, const Int_t p) const;
-        TComplex PGapNeg(const Int_t n, const Int_t p) const;
-    
-        TComplex S(const Int_t n, const Int_t p) const;
-    
-
-        TComplex Two(const Int_t n1, const Int_t n2) const;
-        TComplex Three(const Int_t n1, const Int_t n2,  const Int_t n3 ) const;
-        TComplex Four(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4) const;
-        TComplex Five(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4, const Int_t n5) const;
-        TComplex Six(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4, const Int_t n5, const Int_t n6) const;
-        TComplex Seven(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4, const Int_t n5, const Int_t n6, const Int_t n7) const;
-        TComplex Eight(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4, const Int_t n5, const Int_t n6, const Int_t n7, const Int_t n8) const;
-    
-        TComplex FourGap(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4) const;
-        TComplex SixGap(const Int_t n1, const Int_t n2, const Int_t n3, const Int_t n4, const Int_t n5, const Int_t n6) const;
-        TComplex ThreePos(const Int_t n1, const Int_t n2, const Int_t n3) const;
-        TComplex ThreeNeg(const Int_t n1, const Int_t n2, const Int_t n3) const;
-
-        void Calculate_correlation_2(TProfile*  filling_collect[]);
-        void Calculate_correlation_3(TProfile*  filling_collect[]);
-        void Calculate_correlation_4(TProfile*  filling_collect[]);
-        void Calculate_correlation_6(TProfile*  filling_collect[]);
-        
-        void     ResetFlowVector(TComplex (&array)[fFlowNumHarmonicsMax][fFlowNumWeightPowersMax], Int_t maxHarm, Int_t maxWeightPower); // set values to TComplex(0,0,0) for given array
-
-        
-    
+  
         ClassDef(AliAnalysisFlowTask6, 1);
 };
 

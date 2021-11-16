@@ -8,6 +8,10 @@
 *.exe
 *.o
 *.so
+*.d
+*.pcm
+*.pdf
+
 
 # Packages #
 ############

@@ -18,12 +18,14 @@
 #include "AliMultSelection.h"
 #include "AliAODInputHandler.h"
 #include "TComplex.h"
+#include "AliEventPoolManager.h"
+#include "AliTHn.h"
 
 class AliAnalysisFlowTask6 : public AliAnalysisTaskSE
 {
     public:
                                 AliAnalysisFlowTask6();
-                                AliAnalysisFlowTask6(const char *name, Bool_t bUseWeights);
+                                AliAnalysisFlowTask6(const char *name, Bool_t bUseEff);
 
         virtual                 ~AliAnalysisFlowTask6();
 
@@ -116,6 +118,33 @@ class AliAnalysisFlowTask6 : public AliAnalysisTaskSE
         Double_t                fgap;
 
         vector<Double_t>        Q2;
+    
+    //! ADDED FOR CORRELATION TASK
+    
+        std::vector<Double_t>   fzVtxBins;
+        Int_t                   fNzVtxBins; // number of PV z bins
+        std::vector<Double_t>   fCentBins;
+        TList*                  fOutputListCharged;    //! output list
+        TH2D*                   fHistPhiEta; //!
+        TH2D*                   fhTrigTracks; //!
+        std::vector<Double_t>   fPtBinsTrigCharged;
+        AliEventPoolManager*    fPoolMgr;  //!  event pool manager for Event Mixing
+        Int_t                   fPoolMinNTracks;   // minimum number of tracks in the pool
+        std::vector<Double_t>   fPtBinsAss;
+        
+    
+        AliTHn*                 fhChargedSE; //!
+        Int_t                   fPoolMaxNEvents;   // maximum number of events in the pool
+        Int_t                   fNCentBins; // number of centrality bins
+        AliTHn*                 fhChargedME; //!
+        Bool_t                  fUseEfficiency; // [kFALSE]
+        TList*                  fInputListEfficiency;    //! input list
+        Bool_t                  fEfficiencyEtaDependent; // [kFALSE]
+    
+    //!
+    
+    
+    
     
         Double_t Total_weight_A;
         Double_t Total_weight_B;

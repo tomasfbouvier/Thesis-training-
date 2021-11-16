@@ -65,12 +65,12 @@ AliAnalysisFlowTask6::AliAnalysisFlowTask6() : AliAnalysisTaskSE(),
     fTPCchi2perClusterMax(4.)
     {}
 //_____________________________________________________________________________
-AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseWeights) : AliAnalysisTaskSE(name),
+AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseEff) : AliAnalysisTaskSE(name),
     fAOD(0),
     fTrigger(AliVEvent::kINT7),
     fIsPP(kFALSE),
     fEventRejectAddPileUp(kFALSE),
-    fUseWeights(bUseWeights),
+    fUseWeights(bUseEff),
     fFilterBit(96),
     fCentBinNum(10),
     fCentMin(0),
@@ -95,10 +95,16 @@ AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseWeights)
     fTPCchi2perClusterMin(0.1),
     fTPCchi2perClusterMax(4.),
     fGapping(kTRUE),
-    fWeighting(bUseWeights),
+    fWeighting(bUseEff),
     fDiff(kFALSE),
     maxHarm(8),
     maxWeightPower(6),
+    fNzVtxBins(10),
+    fNCentBins(15),
+    fPoolMaxNEvents(2000),
+    fPoolMinNTracks(50000),
+    fEfficiencyEtaDependent(kFALSE),
+    fUseEfficiency(bUseEff),
     fFlowVecQpos{},
     fFlowVecQneg{},
     fFlowVecPpos{},
@@ -107,7 +113,7 @@ AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseWeights)
     fFlowVecSneg{}
 {
     DefineInput(0, TChain::Class());
-    if(bUseWeights) { DefineInput(1, TList::Class()); }
+    if(bUseEff) { DefineInput(1, TList::Class()); }
     DefineOutput(1, TList::Class());
 }
 //_____________________________________________________________________________
@@ -125,7 +131,6 @@ void AliAnalysisFlowTask6::UserCreateOutputObjects()
     // creating output lists
     fOutputList = new TList();
     fOutputList->SetOwner(kTRUE);
-    
     
     
     TString sEventCounterLabel[] = {"Input", "Trigger OK", "Event cuts OK", "Event OK"};
@@ -174,6 +179,86 @@ void AliAnalysisFlowTask6::UserCreateOutputObjects()
     if(fUseWeights) fInputWeights = (TList*) GetInputData(1);
     
     PostData(1, fOutputList);
+    
+    //!  ZUZANA'S ADD
+
+
+    // //just for testing
+    fPtBinsTrigCharged = {0.5, 1.0, 1.5, 2.0, 3.0, 5.0}; // Esto estaba muteado
+    fPtBinsAss = {0.5, 1.0, 1.5, 2.0, 3.0};   //Esto estaba muteado
+    fzVtxBins = {-10.0,-8.0,-6.0,-4.0,-2.0,0.0,2.0,4.0,6.0,8.0,10.0};
+    fCentBins = {0,1,2,3,4,5,10,20,30,40,50,60,70,80,90,100};
+
+    fOutputListCharged = new TList();
+    fOutputListCharged->SetOwner(kTRUE);
+
+    fhEventCounter = new TH1D("fhEventCounter","Event Counter",10,0,10);
+    fOutputListCharged->Add(fhEventCounter);
+
+    fHistPhiEta = new TH2D("fHistPhiEta", "fHistPhiEta; phi; eta", 100, -0.5, 7, 100, -1.5, 1.5);
+    fOutputListCharged->Add(fHistPhiEta);
+
+    fhTrigTracks = new TH2D("fhTrigTracks", "fhTrigTracks; pT (trig); PVz", fPtBinsTrigCharged.size() - 1, fPtBinsTrigCharged.data(), 10, -10, 10);
+    fOutputListCharged->Add(fhTrigTracks);
+    
+    //mixing
+    fPoolMgr = new AliEventPoolManager(fPoolMaxNEvents, fPoolMinNTracks, fNCentBins,fCentBins.data(), fNzVtxBins, fzVtxBins.data());
+    
+    if (!fPoolMgr) { AliError("Event Pool manager not created!"); return; }
+    fPoolMgr->SetTargetValues(fPoolMinNTracks, 0.1, 5);
+
+    //sparses
+    
+    Int_t nSteps = 1;
+    Double_t binning_deta_tpctpc[33] = {-1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0,    0.1,  0.2,  0.3,  0.4,  0.5, 0.6,  0.7,  0.8,  0.9,  1.0,  1.1,  1.2,  1.3,  1.4,  1.5, 1.6};
+    
+    Double_t binning_dphi[73] = { -1.570796, -1.483530, -1.396263, -1.308997, -1.221730, -1.134464, -1.047198, -0.959931, -0.872665, -0.785398, -0.698132, -0.610865, -0.523599, -0.436332, -0.349066, -0.261799, -0.174533, -0.087266, 0.0,       0.087266,  0.174533,  0.261799,  0.349066,  0.436332, 0.523599,  0.610865,  0.698132,  0.785398,  0.872665,  0.959931, 1.047198,  1.134464,  1.221730,  1.308997,  1.396263,  1.483530, 1.570796,  1.658063,  1.745329,  1.832596,  1.919862,  2.007129, 2.094395,  2.181662,  2.268928,  2.356194,  2.443461,  2.530727, 2.617994,  2.705260,  2.792527,  2.879793,  2.967060,  3.054326, 3.141593,  3.228859,  3.316126,  3.403392,  3.490659,  3.577925, 3.665191,  3.752458,  3.839724,  3.926991,  4.014257,  4.101524, 4.188790,  4.276057,  4.363323,  4.450590,  4.537856,  4.625123, 4.712389};
+    
+    const Int_t sizePtTrig = fPtBinsTrigCharged.size() - 1;
+    const Int_t sizePtAss = fPtBinsAss.size() - 1;
+    const Int_t iBinningTPCTPC[5] = {32,72,sizePtTrig,sizePtAss, 10};
+    
+    fhChargedSE = new AliTHn("fhChargedSE", "fhChargedSE", nSteps, 5, iBinningTPCTPC);
+    
+    fhChargedSE->SetBinLimits(0, binning_deta_tpctpc);
+    
+    fhChargedSE->SetBinLimits(1, binning_dphi);
+    
+    fhChargedSE->SetBinLimits(2, fPtBinsTrigCharged.data());
+    
+    fhChargedSE->SetBinLimits(3, fPtBinsAss.data());
+    
+    fhChargedSE->SetBinLimits(4, -10,10);
+    fhChargedSE->SetVarTitle(0, "#Delta#eta");
+    fhChargedSE->SetVarTitle(1, "#Delta#phi");
+    fhChargedSE->SetVarTitle(2, "p_{T} [GeV/c] (trig)");
+    fhChargedSE->SetVarTitle(3, "p_{T} [GeV/c] (ass)");
+    fhChargedSE->SetVarTitle(4, "PVz");
+    fOutputListCharged->Add(fhChargedSE);
+    
+    
+
+    fhChargedME = new AliTHn("fhChargedME", "fhChargedME", nSteps, 5, iBinningTPCTPC);
+    fhChargedME->SetBinLimits(0, binning_deta_tpctpc);
+    fhChargedME->SetBinLimits(1, binning_dphi);
+    fhChargedME->SetBinLimits(2, fPtBinsTrigCharged.data());
+    fhChargedME->SetBinLimits(3, fPtBinsAss.data());
+    fhChargedME->SetBinLimits(4, -10,10);
+    fhChargedME->SetVarTitle(0, "#Delta#eta");
+    fhChargedME->SetVarTitle(1, "#Delta#phi");
+    fhChargedME->SetVarTitle(2, "p_{T} [GeV/c] (trig)");
+    fhChargedME->SetVarTitle(3, "p_{T} [GeV/c] (ass)");
+    fhChargedME->SetVarTitle(4, "PVz");
+    fOutputListCharged->Add(fhChargedME);
+
+
+    if(fUseEfficiency) {
+      fInputListEfficiency = (TList*) GetInputData(1);
+      if(fEfficiencyEtaDependent && fAbsEtaMax > 0.8) AliWarning("Efficiency loading -- eta can be out of range!");
+    }
+
+    PostData(1, fOutputListCharged);
+    
 }
 //_____________________________________________________________________________
 void AliAnalysisFlowTask6::UserExec(Option_t *)

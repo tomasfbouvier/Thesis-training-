@@ -13,7 +13,7 @@ AliAnalysisFlowTask6* AddFlowTask6(TString name = "FlowTask", TString weightsFil
     TString taskName = Form("%s_%s",name.Data(),suffix);
 
     Bool_t useWeights = kFALSE;
-    if(!weightsFile.IsNull()) useWeights = kFALSE; //! SET TO KTRUE one day
+    if(!weightsFile.IsNull()) useWeights = kFALSE;
 
     AliAnalysisFlowTask6* task = new AliAnalysisFlowTask6(taskName.Data(), useWeights);
     if(!task) return 0x0;

@@ -40,9 +40,11 @@ ClassImp(AliAnalysisFlowTask6)
 
 AliAnalysisFlowTask6::AliAnalysisFlowTask6() : AliAnalysisTaskSE(),
     fAOD(0),
+    fOutputListCharged(0),
     fTrigger(AliVEvent::kINT7),
     fIsPP(kFALSE),
     fEventRejectAddPileUp(kFALSE),
+    fUseWeights(kFALSE),
     fFilterBit(96),
     fCentBinNum(10),
     fCentMin(0),
@@ -53,17 +55,26 @@ AliAnalysisFlowTask6::AliAnalysisFlowTask6() : AliAnalysisTaskSE(),
     fAbsEtaMin(0.4),
     fAbsEtaMax(0.8),
     fPVtxCutZ(10.0),
+    fPtMinTrig(0.5),
+    fPtMaxTrig(10.0),
+    fPtMinAss(0.5),
+    fPtMaxAss(1.5),
     fPVz(99.9),
     fCentEstimator("V0M"),
-    fOutputListCharged(0),
     fhEventCounter(0),
     fDCAtoVtxZ(3.0),
     fDCAtoVtxXY(3.0),
     fNTPCClusters(70),
     fNITSClusters(2),
     fTPCchi2perClusterMin(0.1),
-    fTPCchi2perClusterMax(4.)
-    {}
+    fTPCchi2perClusterMax(4.),
+    fNzVtxBins(10),
+    fNCentBins(15),
+    fPoolMaxNEvents(2000),
+    fPoolMinNTracks(50000),
+    fEfficiencyEtaDependent(kFALSE),
+    fUseEfficiency(kFALSE)
+{}
 //_____________________________________________________________________________
 AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseEff) : AliAnalysisTaskSE(name),
     fAOD(0),
@@ -82,6 +93,10 @@ AliAnalysisFlowTask6::AliAnalysisFlowTask6(const char* name, Bool_t bUseEff) : A
     fAbsEtaMin(0.4),
     fAbsEtaMax(0.8),
     fPVtxCutZ(10.0),
+    fPtMinTrig(0.5),
+    fPtMaxTrig(10.0),
+    fPtMinAss(0.5),
+    fPtMaxAss(1.5),
     fPVz(99.9),
     fCentEstimator("V0M"),
     fhEventCounter(0),
@@ -198,26 +213,57 @@ void AliAnalysisFlowTask6::UserCreateOutputObjects()
 //_____________________________________________________________________________
 void AliAnalysisFlowTask6::UserExec(Option_t *)
 {
-    fAOD = dynamic_cast<AliAODEvent*>(InputEvent());
-    if(!fAOD) { return; }
-
+    
     fhEventCounter->Fill("Input",1);
 
+    fAOD = dynamic_cast<AliAODEvent*>(InputEvent());
+    if(!fAOD) { AliError("Event not loaded."); return; }
     if(!IsEventSelected()) { return; }
-
+    
     fhEventCounter->Fill("Event OK",1);
 
     Int_t iTracks(fAOD->GetNumberOfTracks());
-    if(iTracks < 1 ) { return; }
+    if(iTracks < 1 ) {
+      AliWarning("No tracks in the event.");
+      return;
+    }
 
-    
+    //!fTracksTrigCharged = new TObjArray;
+    fTracksAss = new TObjArray;
+    fTracksTrigCharged = new TObjArray;
+
+
+
     for(Int_t i(0); i < iTracks; i++) {
+        AliAODTrack* track = static_cast<AliAODTrack*>(fAOD->GetTrack(i));
         
-    
+        if(!track || !IsTrackSelected(track)) { continue; }
+        Double_t trackPt = track->Pt();
+        if(trackPt > fPtMinAss && trackPt < fPtMaxAss) fTracksAss->Add((AliAODTrack*)track);
+        if(trackPt > fPtMinTrig && trackPt < fPtMaxTrig) {
+          fTracksTrigCharged->Add((AliAODTrack*)track);
+          fhTrigTracks->Fill(trackPt, fPVz);
+            
+        }
+
+        //example histogram
+
+        fHistPhiEta->Fill(track->Phi(), track->Eta());
+        
+    }
+    if(!fTracksTrigCharged->IsEmpty()){
+        //FillCorrelations();
+        //FillCorrelationsMixed();
     }
     
-    
+    fTracksTrigCharged->Clear();
+        delete fTracksTrigCharged;
+
+    fTracksAss->Clear();
+        delete fTracksAss;
+
     PostData(1, fOutputListCharged);
+
     
     
 }
@@ -255,24 +301,53 @@ Bool_t AliAnalysisFlowTask6::IsEventSelected()
 
     return kTRUE;
 }
+
+/*
+Bool_t AliAnalysisFlowTask6::IsEventSelected()
+{
+  fhEventCounter->Fill("EventOK",1);
+
+  AliAnalysisManager* mgr = AliAnalysisManager::GetAnalysisManager();
+  AliInputEventHandler* inputHandler = (AliInputEventHandler*) mgr->GetInputEventHandler();
+  UInt_t fSelectMask = inputHandler->IsEventSelected();
+  if(!(fSelectMask & fTrigger)) { return kFALSE; }
+  fhEventCounter->Fill("TriggerOK",1);
+    
+  if(fIsHMpp) fEventCuts.OverrideAutomaticTriggerSelection(AliVEvent::kHighMultV0, true);
+  if(!fEventCuts.AcceptEvent(fAOD)) { return kFALSE; }
+  fhEventCounter->Fill("CutsOK",1);
+
+  AliMultSelection* multSelection = (AliMultSelection*) fAOD->FindListObject("MultSelection");
+  if(!multSelection) { return kFALSE; }
+  fhEventCounter->Fill("MultOK",1);
+  Float_t dPercentile = multSelection->GetMultiplicityPercentile(fCentEstimator);
+  if(dPercentile > 100 || dPercentile < 0) { return kFALSE; }
+  fhEventCounter->Fill("PercOK",1);
+
+  if(fCentMax > 0.0 && (dPercentile < fCentMin || dPercentile > fCentMax)) { return kFALSE; }
+  fhEventCounter->Fill("CentOK",1);
+  fCentrality = (Double_t) dPercentile;
+        
+
+  fPVz = fAOD->GetPrimaryVertex()->GetZ();
+  if(TMath::Abs(fPVz) >= 10.0) { return kFALSE; }
+  fhEventCounter->Fill("PVzOK",1);
+
+  fbSign = (InputEvent()->GetMagneticField() > 0) ? 1 : -1;
+
+  return kTRUE;
+}
+ */
+
 //_____________________________________________________________________________
 Bool_t AliAnalysisFlowTask6::IsTrackSelected(const AliAODTrack* track) const
 {
-    if(!track->TestFilterBit(fFilterBit)) { return kFALSE; }
-    if(track->GetTPCNcls() < 70 && fFilterBit != 2) { return kFALSE; }
-    if(fPtMin > 0 && track->Pt() < fPtMin) { return kFALSE; }
-    if(fPtMax > 0 && track->Pt() > fPtMax) { return kFALSE; }
-    if(fAbsEtaMax > 0 && TMath::Abs(track->Eta()) > fAbsEtaMax) { return kFALSE; }
-    if(fAbsEtaMin > 0 && TMath::Abs(track->Eta()) < fAbsEtaMin) { return kFALSE; }
-    /*
-    if(track->DCA() > fDCAtoVtxXY) { return kFALSE; }
-    if(track->ZAtDCA() > fDCAtoVtxZ) { return kFALSE; }
-    if(track->GetTPCNcls() < fNTPCClusters)  { return kFALSE; }
-    if(track->GetITSNcls()< fNITSClusters)  { return kFALSE; }
-    if(track->GetTPCchi2perCluster() < fTPCchi2perClusterMin || track->GetTPCchi2perCluster() > fTPCchi2perClusterMax)  { return kFALSE; }
-    */
-    
-    return kTRUE;
+  if(!track->TestFilterBit(fFilterBit)) { return kFALSE; }
+  if(track->GetTPCNcls() < 70 && fFilterBit != 2) { return kFALSE; }
+  if(fAbsEtaMax > 0.0 && TMath::Abs(track->Eta()) > fAbsEtaMax) { return kFALSE; }
+  if(track->Charge() == 0) { return kFALSE; }
+
+  return kTRUE;
 }
 //_____________________________________________________________________________
 Bool_t AliAnalysisFlowTask6::IsEventRejectedAddPileUp() const

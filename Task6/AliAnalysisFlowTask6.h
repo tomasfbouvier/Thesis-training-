@@ -117,6 +117,18 @@ class AliAnalysisFlowTask6 : public AliAnalysisTaskSE
         Bool_t                  fUseEfficiency; // [kFALSE]
         TList*                  fInputListEfficiency;    //! input list
         Bool_t                  fEfficiencyEtaDependent; // [kFALSE]
+        Bool_t                  fIsHMpp; // [kFALSE]
+
+        Int_t                   fbSign;
+    
+        TObjArray*              fTracksTrigCharged; //!
+        TObjArray*              fTracksAss; //!
+    
+        Double_t                fPtMinAss;
+        Double_t                fPtMaxAss;
+        Double_t                fPtMinTrig;
+        Double_t                fPtMaxTrig;
+    
     
     //!
     
